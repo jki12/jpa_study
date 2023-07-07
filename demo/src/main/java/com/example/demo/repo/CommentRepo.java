@@ -1,13 +1,14 @@
 package com.example.demo.repo;
 
-import com.example.demo.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.comment.Comment;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -15,19 +16,39 @@ public class CommentRepo {
     @PersistenceContext
     private EntityManager em;
 
-    public Comment save(Comment comment) {
+    public boolean save(Comment comment) {
 
-        em.persist(comment);
+        try {
+            em.persist(comment);
+        } catch (Exception e) {
+            // handling
 
-        return comment;
+            e.printStackTrace();
+
+            return false;
+        }
+
+        return true;
     }
 
-    public List<Comment> findByArticleId(Long id) {
+    public Optional<ArrayList<Comment>> findByArticleId(Long id) {
+        final String ql = "select c from Comment c where c.articleId = :id";
+        var res = new ArrayList<Comment>();
 
-        String ql = "select c from Comment c where c.articleId = :id";
+        try {
+            res.addAll(em.createQuery(ql).setParameter("id", id).getResultList());
 
+            return Optional.of(res);
+        } catch (Exception e) {
+            return Optional.of(res);
+        }
+    }
 
-        return em.createQuery(ql).setParameter("id", id).getResultList();
+    public ArrayList<Comment> findAll() {
+        ArrayList<Comment> res = new ArrayList<>();
 
+        res.addAll(em.createQuery("select c from Comment c", Comment.class).getResultList());
+
+        return res;
     }
 }
