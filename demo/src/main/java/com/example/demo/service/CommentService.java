@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.Util;
 import com.example.demo.comment.Comment;
 import com.example.demo.repo.CommentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +14,28 @@ public class CommentService {
     @Autowired private CommentRepo repo;
 
     public boolean save(Comment comment) {
-        return repo.save(comment);
+        try {
+
+            repo.save(comment);
+
+            return true;
+
+        }
+        catch (Exception e) {
+
+            // error handling.
+
+            return false;
+
+        }
     }
 
     public ArrayList<Comment> findByArticleId(Long id) {
-        assert (repo.findByArticleId(id).isPresent());
 
-        return repo.findByArticleId(id).get();
+        return new ArrayList<>(repo.findByArticleId(id)); // check to empty res case.
     }
 
     public ArrayList<Comment> findAll() {
-        return repo.findAll();
+        return Util.iterableToArrayList(repo.findAll());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.Util;
 import com.example.demo.article.Article;
 import com.example.demo.article.ArticleDto;
 import com.example.demo.comment.Comment;
@@ -13,23 +14,41 @@ import java.util.ArrayList;
 public class ArticleService {
     @Autowired private ArticleRepo repo;
 
+    public boolean isExist(Long id) {
+        return !findById(id).equals(Article.EMPTY);
+    }
+
     public boolean save(Article article) {
-        return repo.save(article);
+        try {
+            repo.save(article);
+
+            return true;
+        }
+        catch (Exception e) {
+
+            return false;
+        }
     }
 
     public ArrayList<Article> findAll() {
-        return repo.findAllArticles().get();
+        return Util.iterableToArrayList(repo.findAll());
     }
 
     public Article findById(Long id) {
-        return repo.findById(id).orElseGet(() -> null);
+        return repo.findById(id).orElseGet(() -> Article.EMPTY);
     }
 
-    public void update(Long id, ArticleDto articleDto) {
-        repo.update(id, articleDto);
+    public Article update(Long id, ArticleDto articleDto) {
+        var res = findById(id);
+
+        if (res.equals(Article.EMPTY)) return null;
+
+        res.update(articleDto);
+
+        return res;
     }
 
-    public void removeArticle(Long id) {
-        repo.remove(id);
+    public void deleteArticle(Long id) {
+        repo.deleteById(id);
     }
 }

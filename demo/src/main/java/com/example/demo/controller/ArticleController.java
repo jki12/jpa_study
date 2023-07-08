@@ -18,17 +18,15 @@ public class ArticleController {
     }
 
     @PostMapping("/articles")
-    public void postArticle(@RequestBody ArticleDto articleDto) {
-
-
-        articleService.save(new Article(articleDto));
+    public boolean postArticle(@RequestBody ArticleDto articleDto) {
+        return articleService.save(new Article(articleDto));
     }
 
     @GetMapping("/articles/{article-id}")
     public Article getArticleById(@PathVariable("article-id") Long articleId) {
         var res = getById(articleId);
 
-        if (res == null) return null;
+        // res == empty.
 
         res.setComments(commentService.findByArticleId(articleId));
 
@@ -37,9 +35,7 @@ public class ArticleController {
 
     @DeleteMapping("/articles/{article-id}")
     public void deleteArticle(@PathVariable("article-id") Long articleId) {
-
-        articleService.removeArticle(articleId);
-
+        articleService.deleteArticle(articleId);
     }
 
     @GetMapping("/articles")

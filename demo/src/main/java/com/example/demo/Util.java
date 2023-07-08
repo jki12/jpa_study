@@ -1,7 +1,11 @@
 package com.example.demo;
 
 import com.example.demo.article.Article;
+import com.example.demo.comment.Comment;
 
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Util {
@@ -23,5 +27,13 @@ public class Util {
 
     private Article generateArticle() {
         return new Article(generate(), generate());
+    }
+
+    public static <T> ArrayList<T> iterableToArrayList(Iterable<T> iter) {
+        ArrayList<T> res = new ArrayList<>();
+
+        for (var temp : iter) res.add(temp);
+
+        return res;
     }
 }

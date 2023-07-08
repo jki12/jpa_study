@@ -1,8 +1,10 @@
 package com.example.demo.article;
 
 import com.example.demo.comment.Comment;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.Auditable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -10,34 +12,32 @@ import java.util.ArrayList;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@RequiredArgsConstructor
 public class Article {
+    public static final Article EMPTY = new Article("Search result not found.", "des...");
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // @Column(name = "CREATED_DATE")
     @Column(nullable = false)
-    private final OffsetDateTime createdDate;
+    @CreatedDate private OffsetDateTime createdDate;
     private OffsetDateTime modifiedDate;
     @Column(nullable = false)
-    private String title;
+    @NonNull private String title;
     @Column(nullable = false)
-    private String mainText;
+    @NonNull private String mainText;
 
     @Transient
     @Setter private ArrayList<Comment> comments = new ArrayList<>();
 
-    protected Article() {
-        createdDate = OffsetDateTime.now();
-    }
-
     public Article(ArticleDto articleDto) {
-        this(articleDto.getTitle(), articleDto.getMainText());
+        this.title = articleDto.getTitle();
+        this.mainText = articleDto.getMainText();
     }
 
-    public Article(String title, String mainText) {
-        this();
-
-        this.title = title;
-        this.mainText = mainText;
+    @PrePersist
+    private void setCreatedDate() {
+        createdDate = OffsetDateTime.now();
     }
 
     public boolean isModified() {
