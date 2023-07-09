@@ -1,6 +1,9 @@
 package com.example.demo.comment;
 
+import com.example.demo.model.BaseEntity;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,21 +13,8 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Getter
-public class Comment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long articleId;
-    private final OffsetDateTime createdDate;
-    private String comment;
-
-    public Comment() {
-        createdDate = OffsetDateTime.now();
-    }
-
-    public Comment(Long articleId, String comment) {
-        this();
-
-        this.articleId = articleId;
-        this.comment = comment;
-    }
+@RequiredArgsConstructor
+public class Comment extends BaseEntity {
+    @NonNull private Long articleId;
+    @NonNull private String comment;
 }

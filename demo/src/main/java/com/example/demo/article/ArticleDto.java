@@ -1,15 +1,13 @@
 package com.example.demo.article;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
+@RequiredArgsConstructor
 public class ArticleDto {
-    private String title;
-    private String mainText;
-
-    public ArticleDto(String title, String mainText) {
-        this.title = title;
-        this.mainText = mainText;
-    }
+    @NonNull private String title;
+    @NonNull private String mainText;
 }
